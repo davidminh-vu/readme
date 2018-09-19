@@ -1,0 +1,44 @@
+Postgresql
+Zurück zu: SQL Performance...
+
+Installation
+
+apt update
+apt upgrade
+apt install net-tools
+apt install postgresql-server-dev-10
+apt install postgresql-client
+apt install postgresql
+
+Als superuser von postgres anmelden
+
+su postgres
+psql
+
+Kommandos für die Erstellung eines neuen Users und einer neuen Datenbank
+
+CREATE USER schokoUser WITH LOGIN PASSWORD 'schokoUser';
+CREATE DATABASE schokofabrik OWNER schokoUser;
+GRANT ALL PRIVILEGES ON DATABASE schokofabrik TO schokoUser;
+
+Danach Putty: Verbinden mit via ssh durch Putty (IP addresse des Postgres eingeben)
+(Mit max:max(name,pw) verbinden)
+Verbindung zur Datenbank (in root:~$ oder max:~$)
+
+Syntax: psql -h localhost -U USER-W -d DATENBANK
+Bsp: psql -h localhost -U mvu -W -d schokofabrik
+pw: fehler11
+
+Danach die .zip bzw .tar ins Debian verschieben, dies geschiet mittels WinSCP 
+Einfach eine Connection zum Debian aufbauen, die Datei verschieben
+Dann max@debian:~$tar -zxf testdata.tar.gz
+
+tolle sql abfragen:
+explain (SYNTAX) - zeigt cost an (einfach am anfang des code schreiben)
+explain analyze (SYNTAX) - zeigt auch zeit an wielang es gebraucht hat für Befehl
+
+
+
+\dt um alle Tables anzuzeigen
+SELECT * from mytable => inhalt des Tables anzuschauen
+INSERT INTO mytable VALUES (40,20,'sampletext');

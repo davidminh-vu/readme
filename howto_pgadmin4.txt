@@ -1,0 +1,67 @@
+Auf Linux/Debian/etc.. pgadmin4 installieren
+Ist ein GUI für PostgreSQL, falls dies nicht installiert ist schau 'howto_postgreSQL'
+
+Hilflink: 
+	https://www.linuxhelp.com/how-to-install-pgadmin4-on-ubuntu-16-04/
+	https://techyaz.com/postgresql/install-pgadmin-4-in-debian-9-stretch/
+
+#Zuerst das System updaten:
+	sudo apt-get update
+
+#Dann alle benötigten Packages downloaden (eventuell neue packages, siehe https://www.pgadmin.org)
+	sudo apt-get install build-essential libssl-dev libffi-dev libgmp3-dev virtualenv python-pip libpq-dev python-dev
+
+#Danach sollte man ein neues Directory erstellen in dem pgAdmin4 installiert werden soll
+#Dies macht man am besten einfach in /home/User_Name/
+	mkdir pgAdmin4
+	cd pgAdmin4/
+	virtualenv pgAdmin4
+
+#Man muss das virtuell Environment activieren...
+#auch einfach im pgAdmin4 ordner den cmd:
+	User_name/pgAdmin4$ source bin/activate
+
+#Alles ist nun eingestellt, nun kann man beginnen pgAdmin4 zu installieren
+#Zuerst muss man es downloaden über den wget cmd
+#und dann installieren
+	wget https://ftp.postgresql.org/pub/pgadmin/pgadmin4/v2.1/pip/pgadmin4-2.1-py2.py3-none-any.whl
+	pip install pgadmin4-2.1-py2.py3-none-any.whl
+
+#Es ist nun installiert, nun muss eine neue config_local.py erstellen
+#dort werden quasi alle einstellung für die local maschine erstellt
+#dazu zählen auch auf welche host-addresse es hören muss
+#noch immer in /home/User_Name/pgAdmin4
+	nano lib/python2.7/site-packages/pgadmin4/config_local.py
+
+#und importiert
+import os
+DATA_DIR = os.path.realpath(os.path.expanduser(u'~/.pgadmin/'))
+LOG_FILE = os.path.join(DATA_DIR, 'pgadmin4.log')
+SQLITE_PATH = os.path.join(DATA_DIR, 'pgadmin4.db')
+SESSION_DB_PATH = os.path.join(DATA_DIR, 'sessions')
+STORAGE_DIR = os.path.join(DATA_DIR, 'storage')
+SERVER_MODE = False
+DEFAULT_SERVER = '0.0.0.0'
+
+#Somit ist nun alles eingestellt
+
+#Zum STARTEN von pqAdmin4
+#evenutell -> source bin/activate
+	python lib/python2.7/site-packages/pgadmin4/pgAdmin4.py
+
+#Es sollte dann eine Nachricht kommen...
+Starting pgAdmin 4. Please navigate to http://0.0.0.0:5050 in your browser.
+
+#Um diese von außen nun zu erreichen einfach in einer anderen VM bzw. Windows die 
+#ip von der VM und fertig
+
+
+--------Ip nicht erreichbar von außen------
+#Um mit einem Postgresql-Client von außen zugreifen zu können,
+#müssen folgende Dateien geändert werden:
+
+nano /etc/postgresql/10/main/pg_hba.conf (Zugriff von IP-Network erlauben)
+host    all             all             0.0.0.0/0        md5
+
+nano /etc/postgresql/10/main/postgresql.conf (auf allen IP-Adressen hören)
+listen_addresses = '*'            # what IP address(es) to listen on;
