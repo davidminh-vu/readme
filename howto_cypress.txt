@@ -1,0 +1,12 @@
+howto - Cypress
+#Quellen
+https://docs.cypress.io/guides/guides/continuous-integration.html#What-is-supported
+----------
+#Zuerst Node JS downloaden
+https://nodejs.org
+
+#Repository Clonen
+https://github.com/cypress-io/cypress-example-kitchensink
+
+#Im Cypress Ordner folgenden Befehl ausführen
+npm install cypress --save-dev
