@@ -10,3 +10,6 @@ https://github.com/cypress-io/cypress-example-kitchensink
 
 #Im Cypress Ordner folgenden Befehl ausführen
 npm install cypress --save-dev
+
+#You can now open Cypress by running: node_modules\.bin\cypress open
+#https://on.cypress.io/installing-cypress
