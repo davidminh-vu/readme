@@ -1,0 +1,28 @@
+bei jeder sew aufgabe von borko:
+
+in cmd zu working directory z.b 
+#cd C:\Users\David\Desktop\SchoolStuff\4Klasse\SEW\sew4-GUI-Einfaches-Spiel-mvu-tgm
+
+dann (falls noch nicht) 
+#python setup.py (cmd MUSS als Admin geˆffnet sein)
+
+fÅE alle Befehle:
+#pyb_ -t
+
+Um pycharm zu generieren:
+#pyb_ pycharm_generate
+
+
+In PyCharm (bzw. die working enviourment)
+Dann muss man in ..src/main/python als "Source Root" makieren
+
+Um die Unittest dann zum laufen zu bringen:
+Run config: oben rechts bei PyCharm, einen neue Unittest hinzufÅEen
+Den working directory zu dem derzeitigen anpassen, und alles drum und dran
+DANN die Path: ...src/unittest/python
+	 Pattern: *_tests.py
+
+DONE
+
+Um QTDesigner eine .ui zu einer .py zu machen
+#pyuic5 gameview.ui -o gameview.py

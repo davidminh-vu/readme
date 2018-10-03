@@ -1,0 +1,21 @@
+In Python noch oben rechts bei den Configurations
+einen Neuen Eintrag mit python docs --> Sphinx
+Als input den source Ordner
+Als Output den Build Ornder
+
+In cmd zum zielordner gehen:
+
+python_ setup.py
+
+Um zu zeigen welche cmds es gibt
+pyb_ -t
+
+Um pycharm umgebung einzurichten
+pyb_ pycharm_generate
+
+Um Unittest auszuführen und Sphinx:
+pyb_ publish run_unit_tests
+pyb_ sphinx_generate_documentation
+
+Musst noch die ganzen Sachen in den Index.rst und soweiter
+reinschreiben
