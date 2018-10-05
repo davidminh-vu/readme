@@ -17,3 +17,5 @@ npm start
 
 #Um testen zu starten
 npm run cy:open
+
+C:\Users\David\Desktop\SchoolStuff\5Klasse\SEW\cypress-example-kitchensink
