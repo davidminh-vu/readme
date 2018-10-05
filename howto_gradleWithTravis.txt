@@ -37,3 +37,4 @@ language: java
 
 #Alles Pushen, mit Travis verbinden
 #Irgendwas pushen auf Git, und dann testet travis automatisch alles
+#Man kann auch in build/test/test/ neue tests reinschreiben 
