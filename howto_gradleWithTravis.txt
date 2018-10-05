@@ -1,0 +1,39 @@
+#how to grandle
+#https://guides.gradle.org/building-java-applications/
+#https://docs.travis-ci.com/user/languages/java/
+#https://docs.travis-ci.com/user/multi-os/
+
+#Install Gradle via Chocolatey
+choco install gradle
+
+#Um zu sehen welche gradle version man hat in cmd
+gradle -v
+
+#Um Gradle zu initalisierne
+gradle init --type java-application
+
+#to execute tasks
+gradle run 
+
+#to run tests
+gradle test 
+
+#In .gitignore
+#Falls auf Ubunto initalisiert, aber auf windows ausgeführt dann auch .gradlew
+#Eigentlich sollte man eine .gitignore machen bevor man irgendwie pusht
+#wenn man aber schon gepusht hat, dann soll man alle datein aus 
+#dem repository löschen die folgende namen haben
+.idea
+out
+build
+.gradle
+gradle-travis-example.i*
+.gradlew
+
+#Eine .travis.yml erstellen
+#Quasi eine Travis Config file
+#sagt hier nur das die programmiersprache java ist
+language: java
+
+#Alles Pushen, mit Travis verbinden
+#Irgendwas pushen auf Git, und dann testet travis automatisch alles
