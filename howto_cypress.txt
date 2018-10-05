@@ -13,9 +13,11 @@ npm install
 #You can now open Cypress by running
 #on port 8080
 #http://localhost:8080
+#Startet den Server
 npm start
 
 #Um testen zu starten
+#Öffnet die Anwendung
 npm run cy:open
 
 C:\Users\David\Desktop\SchoolStuff\5Klasse\SEW\cypress-example-kitchensink
