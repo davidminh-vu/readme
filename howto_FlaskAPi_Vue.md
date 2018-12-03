@@ -453,6 +453,346 @@ $ npm install
 $ npm run
 ```
 Zuerst wird vue cli installiert und dann im ordner initalisiert. Danach kommt ein npm install um alle benötigten Dependencies zu installieren. npm run startet den Webserver.
+
+Einfaches Template fürs Verständnis
+```
+template>
+  <div>
+    <p>{{ msg }}</p>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'Ping',
+  data() {
+    return {
+      msg: 'Hello!',
+    };
+  },
+};
+</script>
+```
+Das Template ist sozusagen nur das HTML Tag nur anders. Danach wird ist nur Standard HTML bis zum p-tag. da kommt {{ msg }}, this wird im folgenden script-tag erst definiert. Dies ist nur eine Variable die man dan später setzen wird.
+Bei dem data(){...} setzt man nun seine Parameter. Hier wird msg als "Hello!" definiert, hier könnte man auch Arrays setzen oder ähnliches, wichtig hierbei ist immer ein ',' zu setzen wenn danach noch ein Datensatz folgt.
+
+
+Um zu startet erstellt man in my-project/src/components eine neue "User.vue" Datein mit dem Template von https://github.com/testdrivenio/flask-vue-crud in client/src/components books.vue. Bei diesem muss man nur die Datensätze umändern.
+```
+<template>
+   <div class="container">
+    <div class="row">
+      <div class="col-sm-10">
+        <h1>Users</h1>
+        <hr><br><br>
+        <button type="button" id="addUserButton" class="btn btn-success btn-sm" v-b-modal.user-modal>Add User</button>
+        <br><br>
+
+        <!-- user table -->
+        <table class="table table-hover" id="tableList">
+          <thead>
+            <tr>
+              <th scope="col">Username</th>
+              <th scope="col">Email</th>
+              <th scope="col">Picture URL</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(user, index) in users" :key="index">
+              <td>{{ user.username }}</td>
+              <td>{{ user.email }}</td>
+              <td>{{ user.picture }}</td>
+              <td>
+                <button type="button"
+                        class="btn btn-warning btn-sm"
+                        id="updateUserButton"
+                        v-b-modal.user-update-modal
+                        @click="editUser(user)">
+                    Update
+                </button>
+                <button type="button"
+                        class="btn btn-danger btn-sm"
+                        id="deleteUserButton"
+                        @click="onDeleteUser(user)">
+                    Delete
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- add User modal -->
+    <b-modal ref="addUserModal"
+             id="user-modal"
+            title="Add a new user"
+            hide-footer>
+      <b-form @submit="onSubmit" @reset="onReset" class="w-100">
+        <b-form-group id="form-username-group"
+                      label="Username:"
+                      label-for="form-username-input">
+            <b-form-input id="form-username-input"
+                          type="text"
+                          v-model="addUserForm.username"
+                          required
+                          placeholder="Enter username">
+            </b-form-input>
+        </b-form-group>
+        <b-form-group id="form-email-group"
+                      label="Email:"
+                      label-for="form-email-input">
+          <b-form-input id="form-email-input"
+                        type="email"
+                        v-model="addUserForm.email"
+                        required
+                        placeholder="Enter email">
+          </b-form-input>
+        </b-form-group>
+        <b-form-group id="form-picture-group"
+                      label="Picture (URL):"
+                      label-for="form-picture-input">
+          <b-form-input id="form-picture-input"
+                        type="text"
+                        v-model="addUserForm.picture"
+                        required
+                        placeholder="Enter picture URL">
+          </b-form-input>
+        </b-form-group>
+        <b-button type="submit" id="submitNewUser" variant="primary">Submit</b-button>
+        <b-button type="reset" id="resetNewUser" variant="danger">Reset</b-button>
+      </b-form>
+    </b-modal>
+
+    <b-modal ref="editUserModal"
+             id="user-update-modal"
+             title="Update"
+             hide-footer>
+      <b-form @submit="onSubmitUpdate" @reset="onResetUpdate" class="w-100">
+        <b-form-group id="form-username-edit-group"
+                      label="Title:"
+                      label-for="form-username-edit-input">
+          <b-form-input id="form-username-edit-input"
+                        type="text"
+                        v-model="editForm.username"
+                        required
+                        placeholder="Enter username">
+          </b-form-input>
+        </b-form-group>
+        <b-form-group id="form-email-edit-group"
+                      label="Email:"
+                      label-for="form-email-edit-input">
+          <b-form-input id="form-email-edit-input"
+                        type="email"
+                        v-model="editForm.email"
+                        required
+                        placeholder="Enter email">
+          </b-form-input>
+        </b-form-group>
+        <b-form-group id="form-picture-edit-group"
+                      label="Picture (URL):"
+                      label-for="form-picture-edit-input">
+          <b-form-input id="form-picture-edit-input"
+                        type="text"
+                        v-model="editForm.picture"
+                        required
+                        placeholder="Enter picture URL">
+          </b-form-input>
+        </b-form-group>
+        <b-button type="submit" id="submitEdit" variant="primary">Update</b-button>
+        <b-button type="reset" id="resetEdit" variant="danger">Cancel</b-button>
+      </b-form>
+    </b-modal>
+  </div>
+</template>
+```
+Dies ist nur eine Bootstrap Seite. Wichtig hierbei ist das setzen von dem v-model. Dies ist nur ein custom input von vue, um diese dann später im script leichter setzten zu können. Bedeutet man hat einen Input für den usernamen mit v-model="addUserForm.username", nun kann man im Skript in der Data(){return{addUserForm: { username: ''}}}. Man kann nun den Value aus dem Input field ganz einfach über this.addUserForm.username bekommen. <b-form @submit="onSubmit" @reset="onReset" class="w-100"> @submit ruft nur die Methode onSubmit auf.
+```
+<script>
+import axios from 'axios'
+export default {
+  name: 'User',
+  data () {
+    return {
+      msg: null,
+      showMessage: false,
+      users: [],
+      addUserForm: {
+        username: '',
+        email: '',
+        picture: ''
+      },
+      editForm: {
+        username: '',
+        email: '',
+        picture: ''
+      }
+    }
+  },
+  methods: {
+    getUsers () {
+      // Calls the API
+      // Gets all Users existing in the DB
+      // and is then updated in the actual vue html
+      const path = 'http://localhost:5000/user/all'
+      axios.get(path)
+        .then((res) => {
+          this.users = res.data
+        })
+        .catch((error) => {
+          // eslint-disable-next-line
+          console.error(error)
+        })
+    },
+    addUser (payload) {
+      // Calls the API
+      // Adds an User to the DB
+      // and then calls getUsers to update the HTML
+      const path = 'http://localhost:5000/user'
+      axios.post(path, payload)
+        .then(() => {
+          this.getUsers()
+          this.message = 'User added!'
+          this.showMessage = true
+        })
+        .catch((error) => {
+          // eslint-disable-next-line
+          console.error(error)
+          this.getUsers()
+        })
+    },
+    updateUser (payload, userID) {
+      // Calls the API
+      // Updates the fields of an User
+      // and then calls getUsers to update the HTML
+      const path = `http://localhost:5000/user/${userID}/put`
+      axios.put(path, payload)
+        .then(() => {
+          this.getUsers()
+          this.message = 'User updated!'
+          this.showMessage = true
+        })
+        .catch((error) => {
+          // eslint-disable-next-line
+          console.error(error)
+          this.getUsers()
+        })
+    },
+    removeUser (userID) {
+      // Calls the API
+      // Removes an User when clicking on the delete button
+      // and then calls getUsers to update the HTML
+      const path = `http://localhost:5000/user/${userID}/delete`
+      axios.delete(path)
+        .then(() => {
+          this.getUsers()
+          this.message = 'User removed!'
+          this.showMessage = true
+        })
+        .catch((error) => {
+          // eslint-disable-next-line
+          console.error(error)
+          this.getUsers()
+        })
+    },
+    initForm () {
+      // Sets the value of the Forms
+      // to empty Strings
+      // when adding a new user
+      this.addUserForm.username = ''
+      this.addUserForm.email = ''
+      this.addUserForm.picture = ''
+      this.editForm.username = ''
+      this.editForm.email = ''
+      this.editForm.picture = ''
+      this.editForm.id = ''
+    },
+    onSubmit (evt) {
+      // When user pressed the submit button
+      // when adding a new User
+      // Calls the addUser Method with the Data as Parameter
+      evt.preventDefault()
+      this.$refs.addUserModal.hide()
+      const payload = {
+        username: this.addUserForm.username,
+        email: this.addUserForm.email,
+        picture: this.addUserForm.picture
+      }
+      this.addUser(payload)
+      this.initForm()
+    },
+    onSubmitUpdate (evt) {
+      // When user pressed the submit button
+      // when updating the fields of a new User
+      // Calls the updateUser Method with the Data as Parameter
+      evt.preventDefault()
+      this.$refs.editUserModal.hide()
+      const payload = {
+        username: this.editForm.username,
+        email: this.editForm.email,
+        picture: this.editForm.picture
+      }
+      this.updateUser(payload, this.editForm.id)
+    },
+    onReset (evt) {
+      // When user pressed the reset button
+      // when adding a new User
+      // Clears the fields of the form
+      evt.preventDefault()
+      this.$refs.addUserModal.hide()
+      this.initForm()
+    },
+    onResetUpdate (evt) {
+      // When user pressed the reset button
+      // when updating a new User
+      // Clears the fields of the form
+      evt.preventDefault()
+      this.$refs.editUserModal.hide()
+      this.initForm()
+      this.getUsers()
+    },
+    onDeleteUser (user) {
+      // When user pressed the remove button
+      // Calls the removeUser Method with the ID as the parameter
+      this.removeUser(user.id)
+    },
+    editUser (user) {
+      this.editForm = user
+      console.log(this.editForm)
+    }
+  },
+  created () {
+    // When the site is first created
+    this.getUsers()
+  }
+}
+</script>
+
+<style scoped>
+
+</style>
+```
+Created ist aufgerufen wenn die Seite erstellt wird, Payload sind nur die benötigten Datensätze die man von den input Feldern holt.
+Der Rest wird über die Buttons aufgerufen.
+
+Nun muss man in seiner my-project/src/router seine index.js updaten um seine User.vue zu referenzieren.
+```
+import Vue from 'vue'
+import Router from 'vue-router'
+import User from '@/components/User'
+
+Vue.use(Router)
+
+export default new Router({
+  routes: [
+    {
+      path: '/',
+      name: 'User',
+      component: User
+    }
+  ]
+})
+```
 # Quellen
 1. https://medium.com/python-pandemonium/build-simple-restful-api-with-python-and-flask-part-2-724ebf04d12
 2. [Flask ReST](https://flask-restful.readthedocs.io/en/latest/quickstart.html#full-example)
