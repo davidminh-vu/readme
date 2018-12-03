@@ -443,6 +443,16 @@ def test_deleteAllUser(client):
     assert len(getAll.json) == 0
 ```
 Um irgendwas zu testen ruft man nur die URI Schnittstellen auf und testet dich sachen. Die Datensätze die man zurückbekommt sind im JSON Format. Hier ist noch zu beachten dass man client.[HTTP_Methode] aufrufen muss.
+
+Man geht hierzu zu seinem Ornder wo man das Installieren will und führt folgende Befehle aus:
+```
+$ npm install -g vue-cli
+$ vue init webpack my-project
+$ cd my-project
+$ npm install
+$ npm run
+```
+Zuerst wird vue cli installiert und dann im ordner initalisiert. Danach kommt ein npm install um alle benötigten Dependencies zu installieren. npm run startet den Webserver.
 # Quellen
 1. https://medium.com/python-pandemonium/build-simple-restful-api-with-python-and-flask-part-2-724ebf04d12
 2. [Flask ReST](https://flask-restful.readthedocs.io/en/latest/quickstart.html#full-example)
