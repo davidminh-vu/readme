@@ -454,7 +454,7 @@ $ npm run
 ```
 Zuerst wird vue cli installiert und dann im ordner initalisiert. Danach kommt ein npm install um alle benötigten Dependencies zu installieren. npm run startet den Webserver.
 
-Einfaches Template fürs Verständnis
+Einfaches Template fürs Verständnis:
 ```
 template>
   <div>
@@ -791,6 +791,28 @@ export default new Router({
       component: User
     }
   ]
+})
+```
+Zusätzlich fehlt noch der Bootstrap verweiß in der main.js
+```
+// The Vue build version to load with the `import` command
+// (runtime-only or standalone) has been set in webpack.base.conf with an alias.
+import 'bootstrap/dist/css/bootstrap.css'
+import BootstrapVue from 'bootstrap-vue'
+import Vue from 'vue'
+import App from './App'
+import router from './router'
+
+Vue.config.productionTip = false
+
+Vue.use(BootstrapVue)
+
+/* eslint-disable no-new */
+new Vue({
+  el: '#app',
+  router,
+  components: { App },
+  template: '<App/>'
 })
 ```
 # Quellen
