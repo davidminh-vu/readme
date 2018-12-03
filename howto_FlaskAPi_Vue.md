@@ -132,6 +132,204 @@ class UserAdd(Resource):
 ```
 Nun kommen die richtige implementation um einen neuen User in die Datenbank anzulegen. Wir legen dazu nur die Methode an, aber die Route wie "/user" wird erst am Ende implementiert. Es wird die Klasse UserAdd aufgerufen und es hat eine post Methode. Am Endpoint wird mittels der HTTP Methode POST eine anfrage geschickt und die def post(self) wird dabei aufgerufen. Zuerst werden die Daten requestet. Danach wird ein neuer User mit den Daten vom request erstellt. Diese wird der Datenbank hinzugefügt über .add und .commit.
 Als response wird dann der neue User als JSON response angezeigt.
+```
+class getUsers(Resource):
+    def get(self):
+        """
+        This API is called by the a http GET request
+        to get all Users in the Database
+        :return: all users with their data in a json format
+        """
+        all_users = User.query.all()
+        result = users_schema.dump(all_users)
+        return jsonify(result.data)
+        
+class getUser(Resource):
+    def get(self, id):
+        """
+        This API is called by the a http GET request
+        to get one user specified by the ID
+        :param id: ID of the User
+        :return: the fields of the user in a json format
+        """
+        user = User.query.get(id)
+        return user_schema.jsonify(user)
+
+```
+Bei getUsers() werden alle Datensätze die in der Datenbank orhanden sind ausgelesen und als JSON zurückgegeben. 
+Bei getUser() wird genau der User ausgelesen der die bestimmte ID besitzt. Diese wird später z.B. über "user/1" aufgerufen.
+
+Der Rest wie Put (Updatet die Fields eines User) und delete geht nach den genau den gleichen Schema.
+Das nächste wichtige ist wie man die Methoden als Endpoint bzw. als URI in die Webapplikation einbaut.
+```
+#Adds an Subsite with the method that is called
+#Basically the API
+api.add_resource(UserAdd, '/user')
+api.add_resource(getUser, '/user/<string:id>')
+api.add_resource(getUsers, '/user/all')
+api.add_resource(userDelete, '/user/<string:id>/delete')
+api.add_resource(userUpdate, '/user/<string:id>/put')
+api.add_resource(deleteAllUser, '/user/all/delete')
+```
+Dies ist selbsterklärend, zuerst die Methode dann die URI auf der es laufen soll. <string:id> bekommt man z.B. bei "user/1" 
+Nun der ganze Sourcecode:
+```
+from flask import Flask, request, jsonify
+from flask_sqlalchemy import SQLAlchemy
+from flask_marshmallow import Marshmallow
+from flask_restful import reqparse, abort, Api, Resource
+from flask_cors import CORS
+import os
+
+app = Flask(__name__)
+CORS(app)
+api = Api(app)
+basedir = os.path.abspath(os.path.dirname(__file__))
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'crud.sqlite')
+db = SQLAlchemy(app)
+ma = Marshmallow(app)
+
+parser = reqparse.RequestParser()
+parser.add_argument('user')
+
+class User(db.Model):
+    """"
+    Specifing the parameters a user has
+    """
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True)
+    email = db.Column(db.String(120), unique=True)
+    picture = db.Column(db.String(200), unique=False)
+
+    def __init__(self, username, email, picture):
+        """
+        Init the data that is inputted
+        ID isn't a parameter, as it is set by the system depending on how many users already exists
+        :param username: Username
+        :param email: Email of the User
+        :param picture: Custom Picture of the User
+        """
+        self.username = username
+        self.email = email
+        self.picture = picture
+
+
+class UserSchema(ma.Schema):
+    """
+    Fields to expose
+    """
+    class Meta:
+        # Fields to expose
+        fields = ('username', 'email', 'picture', 'id')
+
+
+user_schema = UserSchema()
+users_schema = UserSchema(many=True)
+
+
+class UserAdd(Resource):
+    """
+    User Add Method
+    """
+    def post(self):
+        """
+        This API is called by the a http POST request
+        to add an user
+        :return: the fields in a json format
+        """
+        username = request.json['username']
+        email = request.json['email']
+        picture = request.json['picture']
+
+        new_user = User(username, email, picture)
+
+        db.session.add(new_user)
+        db.session.commit()
+
+        return user_schema.jsonify(new_user)
+
+class getUsers(Resource):
+    def get(self):
+        """
+        This API is called by the a http GET request
+        to get all Users in the Database
+        :return: all users with their data in a json format
+        """
+        all_users = User.query.all()
+        result = users_schema.dump(all_users)
+        return jsonify(result.data)
+
+class userDelete(Resource):
+    def delete(self, id):
+        """
+        This API is called by the a http DELETE request
+        to delete a user specified by the ID
+        :param id: ID of the User
+        :return: the deleted user data in a json format
+        """
+        user = User.query.get(id)
+        db.session.delete(user)
+        db.session.commit()
+
+        return user_schema.jsonify(user)
+
+class getUser(Resource):
+    def get(self, id):
+        """
+        This API is called by the a http GET request
+        to get one user specified by the ID
+        :param id: ID of the User
+        :return: the fields of the user in a json format
+        """
+        user = User.query.get(id)
+        return user_schema.jsonify(user)
+
+class userUpdate(Resource):
+    def put(self, id):
+        """
+        This API is called by the a http PUT request
+        to update the fields of an user
+        :param id: ID of the User
+        :return: the updated fields in a json format
+        """
+        user = User.query.get(id)
+        username = request.json['username']
+        email = request.json['email']
+        picture = request.json['picture']
+
+        user.email = email
+        user.username = username
+        user.picture = picture
+
+        db.session.commit()
+        return user_schema.jsonify(user)
+
+class deleteAllUser(Resource):
+    def delete(self):
+        """
+        This API is called by the a http DELETE request
+        to delete every User in the DB
+        :return: the updated fields in a json format
+        """
+        all_users = User.query.all()
+        for i in all_users:
+            db.session.delete(i)
+            db.session.commit()
+        return 201
+
+#Adds an Subsite with the method that is called
+#Basically the API
+api.add_resource(UserAdd, '/user')
+api.add_resource(getUser, '/user/<string:id>')
+api.add_resource(getUsers, '/user/all')
+api.add_resource(userDelete, '/user/<string:id>/delete')
+api.add_resource(userUpdate, '/user/<string:id>/put')
+api.add_resource(deleteAllUser, '/user/all/delete')
+if __name__ == '__main__':
+    app.run(debug=True)
+
+```
+
 # Quellen
 1. https://medium.com/python-pandemonium/build-simple-restful-api-with-python-and-flask-part-2-724ebf04d12
 2. [Flask ReST](https://flask-restful.readthedocs.io/en/latest/quickstart.html#full-example)
