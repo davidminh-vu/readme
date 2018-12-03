@@ -51,7 +51,15 @@ git add .
 git commit -m "Init project"
 git push origin master
 ```
-Nun kann man mit der Arbeit beginnen. Man erstellt eine File "flask_server" und import dann alle Module.
+Nun kann man mit der Arbeit beginnen. Man muss zuerst den SQLite Server erstellen. Man erstellt hierzu eine neue "flask_createserver.py" und fügt folgenden Code ein
+```
+from server.flask_server import db
+#Creates a new Flask Database
+db.create_all()
+```
+Dies erstellt einfach nur eine neue Datenbank. Wenn man möchte kann man dies in eine in eine Methode hinzufügen und dann es mittels der main aufrufen, doch dies ist hier optional.
+
+Man erstellt eine File "flask_server.py" und import dann alle Module.
 ```
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
@@ -330,6 +338,111 @@ if __name__ == '__main__':
 
 ```
 
+Um die Flask Applikation zu starten muss man die flask_server.py via Console starten.
+`python flask_server.py`
+Nun kann man seine Methoden testen. Dazu wird API development Tool benötigt wie Insomnia. Man fügt die URL ein ("localhost:5000/user") und stellt, je nach ausgewählter Methode, das richtige HTTP Protokoll (POST, GET, DELETE, etc...) ein. Wenn man z.B. ein neuen User hinzufügen will muss man noch einen JSON Datensatz in das Package schreiben.
+
+## Testen der Flask Applikation
+Hier wird pytest benutzt um Flask zu testen. Dies passiert quasi wie jeder anderer Test.
+```
+import pytest
+import os
+from server.flask_server import app, db
+
+userdata = {"username":"david", "email":"test1@stueden3t.tg3m.ac.at", "picture":"https://www.gooegle.com/pnglol"}
+userdata2 = {"username":"david2", "email":"mvu2@stuedent.tgm.ac.at", "picture":"https://www.gooegle.com/png2"}
+```
+Man importet pytest, os und vom flask_server die App und die DB um darauf zugreifen zu können. Danach sind zwei Datensätze definiert die in die Datenbank hinzugefügt werden. 
+```
+@pytest.fixture
+def client():
+    """
+    Something like StartUp
+    Can specify objects that are needed in every test
+    """
+    app.config['TESTING'] = True
+    db.create_all()
+    client = app.test_client()
+    yield client
+    db.drop_all()
+```
+Pytest.fixture ist quasi nur das StartUp, man kann Objekte definieren die in jedem Test dann benutzt werden können.
+Hier werden nur die config files eingestellt, die Datenbank erstellt bei yield auf die Testergebnisse gewartet und dann die B wieder gedroppt.
+```
+def test_addUser(client):
+    """
+    Test if the AddUser Method is working and checks if the data exists in the DB
+    :param client:
+    :return:
+    """
+    response = client.post("http://localhost:5000/user", json = userdata)
+    answ = client.get("http://localhost:5000/user/1")
+    assert (response.json['username'] == "david") and (response.json['email'] == "test1@stueden3t.tg3m.ac.at") and (response.json['picture'] == "https://www.gooegle.com/pnglol")
+
+def test_getUsers(client):
+    """
+    Test the GetUsers Method
+    Should get every User in the Database
+    :param client:
+    :return:
+    """
+    response = client.post("http://localhost:5000/user", json = userdata)
+    response2 = client.post("http://localhost:5000/user", json = userdata2)
+    answ = client.get("http://localhost:5000/user/all")
+    assert (response.json['username'] == "david") and (response.json['email'] == "test1@stueden3t.tg3m.ac.at") and (response.json['picture'] == "https://www.gooegle.com/pnglol"
+                        and response2.json['username'] == "david2") and (response2.json['email'] == "mvu2@stuedent.tgm.ac.at") and (response2.json['picture'] == "https://www.gooegle.com/png2")
+
+def test_getUser(client):
+    """
+    Test the GetUser Method
+    Should get one User with a specific ID
+    :param client:
+    :return:
+    """
+    response2 = client.post("http://localhost:5000/user", json = userdata2)
+    answ = client.get("http://localhost:5000/user/1")
+    assert (answ.json['username'] == "david2") and (answ.json['email'] == "mvu2@stuedent.tgm.ac.at") and (answ.json['picture'] == "https://www.gooegle.com/png2")
+
+def test_updateUser(client):
+    """
+    Test the UpdateUser Method
+    Should update a exisiting Users fields
+    to a different set of data
+    :param client:
+    :return:
+    """
+    response = client.post("http://localhost:5000/user", json = userdata)
+    update = client.put("http://localhost:5000/user/1/put", json = userdata2)
+    getUser = client.get("http://localhost:5000/user/1")
+    assert (getUser.json['username'] == "david2") and (getUser.json['email'] == "mvu2@stuedent.tgm.ac.at") and (getUser.json['picture'] == "https://www.gooegle.com/png2")
+
+def test_deleteUser(client):
+    """
+    Test the DeleteUser Method
+    Should delete an exisitng user with a specific id
+    :param client:
+    :return:
+    """
+    response = client.post("http://localhost:5000/user", json = userdata)
+    response2 = client.post("http://localhost:5000/user", json = userdata2)
+    deleteUser = client.delete("http://localhost:5000/user/1/delete")
+    getUser = client.get("http://localhost:5000/user/1")
+    assert len(getUser.json) == 0
+
+def test_deleteAllUser(client):
+    """
+    Test the DeleteUsers Method
+    Should delete all existing users in the Database
+    :param client:
+    :return:
+    """
+    response = client.post("http://localhost:5000/user", json = userdata)
+    response2 = client.post("http://localhost:5000/user", json = userdata2)
+    deleteAll = client.delete("http://localhost:5000/user/all/delete")
+    getAll = client.get("http://localhost:5000/user/all")
+    assert len(getAll.json) == 0
+```
+Um irgendwas zu testen ruft man nur die URI Schnittstellen auf und testet dich sachen. Die Datensätze die man zurückbekommt sind im JSON Format. Hier ist noch zu beachten dass man client.[HTTP_Methode] aufrufen muss.
 # Quellen
 1. https://medium.com/python-pandemonium/build-simple-restful-api-with-python-and-flask-part-2-724ebf04d12
 2. [Flask ReST](https://flask-restful.readthedocs.io/en/latest/quickstart.html#full-example)
