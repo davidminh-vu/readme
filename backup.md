@@ -56,8 +56,11 @@ Eine Alternative zu SQL Dump ist es nur die Daten, die PostgreSQL benutzt um all
 ## Continuous Archiving
 Das PostgreSQL-System schreibt zu allen zeiten eine sogennantes "Write ahead Log (WAL)" in dem alle Veränderungen bei der Datenbanken mitgeschrieben werden. Im falle eines Absturz kann die Datenbank wiederhergestellt werden. Somit kann auch eine Backupstrategie daraus erstellt werden. Man kann das File System Level Backup mit dem Backup der WAL-FIles kombinieren. Dies ist weitaus komplexer aber bietet Vorteile.
 
-.) Die Datenbank muss nicht vollkommen Konsitent sein, die Fehler die während des File System Level Backup entstehen werden durch das WAL Wile behoben.
+- Die Datenbank muss nicht vollkommen Konsitent sein, die Fehler die während des File System Level Backup entstehen werden durch das WAL Wile behoben.
+- Man kann mehrere WAL-Files unendlichlang miteinander anzureihen. Dies ermöglicht es fortlaufend backups zu machen die dann aneinander gereiht werden können. Bei großen Datenbaken ist dies sehr wichtig, da nicht soviel Speicher verwendet wird als beim Vollbackup.
+- Zudem kann auch nur bestimmte WAL-Files einanderreihen und den Zeitpunkt der Backups wieder herstellen ohne immer alle ausführen zu müssen.
 
-.) Man kann mehrere WAL-Files unendlichlang miteinander anzureihen. Dies ermöglicht es fortlaufend backups zu machen die dann aneinander gereiht werden können. Bei großen Datenbaken ist dies sehr wichtig, da nicht soviel Speicher verwendet wird als beim Vollbackup.
+Zu beachten ist, dass pg_dumb in diesem Fall nicht genügend Daten besitzt ist um so eine Kombination mit WAL-files zu unterstützen.
+Auch ist ein Nachteil dass man nur die komplette Datenbank kopieren kann und nicht nur ein Teil der Datenbank.
 
-.) Zudem kann auch nur bestimmte WAL-Files einanderreihen und den Zeitpunkt der Backups wieder herstellen ohne immer alle ausführen zu müssen.
+# Beispiel
