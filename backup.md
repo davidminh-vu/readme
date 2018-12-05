@@ -52,3 +52,12 @@ Auch ist es wichtig, dass bevor man den Befehl ausführt alle Administratoren/Us
 
 ## File System Level Backup
 Eine Alternative zu SQL Dump ist es nur die Daten, die PostgreSQL benutzt um alles abzuspeicher, zu kopieren. Doch diese Methode ist umpraktisch da der Server heruntergefahren sein muss damit man die Datenbank kopieren kann. Und falls die Datenbank über mehrere Dateisysteme verteilt ist, ist es schwer alle Backups zu bekommen.
+
+## Continuous Archiving
+Das PostgreSQL-System schreibt zu allen zeiten eine sogennantes "Write ahead Log (WAL)" in dem alle Veränderungen bei der Datenbanken mitgeschrieben werden. Im falle eines Absturz kann die Datenbank wiederhergestellt werden. Somit kann auch eine Backupstrategie daraus erstellt werden. Man kann das File System Level Backup mit dem Backup der WAL-FIles kombinieren. Dies ist weitaus komplexer aber bietet Vorteile.
+
+.) Die Datenbank muss nicht vollkommen Konsitent sein, die Fehler die während des File System Level Backup entstehen werden durch das WAL Wile behoben.
+
+.) Man kann mehrere WAL-Files unendlichlang miteinander anzureihen. Dies ermöglicht es fortlaufend backups zu machen die dann aneinander gereiht werden können. Bei großen Datenbaken ist dies sehr wichtig, da nicht soviel Speicher verwendet wird als beim Vollbackup.
+
+.) Zudem kann auch nur bestimmte WAL-Files einanderreihen und den Zeitpunkt der Backups wieder herstellen ohne immer alle ausführen zu müssen.
