@@ -1,5 +1,6 @@
 Author: David Minh Vu, 5CHIT, 5.12.2018
 # Backup
+# Schritt 1
 Backups sind wichtig, Dateiverlust kann aufgrund Hardwaredefekts zustande kommen. Es ist deshalb sinnvolle Backup Strategien anzuwenden. In diesem Dokument werden folgende Strategien besprochen:
 1. Inkrementelles Backup
 2. Differentielles Backup
@@ -38,3 +39,16 @@ Um  mehrere Versionen zu haben, müssen mehrere Sicherungsbänder aufbewahrt wer
 
 ## Optimale Backup-Methode
 Meist werden aus allen 3 Backup-Methoden eine Kombination gemacht. Dies kommt auf den Anwendungsfall an, aber ein Beispiel wäre wöchentlich ein Vollbackup zu erstellen und jeden Tag ein inkrementelles Backup um das Datenaufkommen niedrig zu halten.
+
+# Backup and Restore in PostgreSQL
+# Schritt 2
+## SQL Dump | Vollbackup
+In PostgreSQL kann man auch die Backupstrategien einsetzen. PostgreSQL erlaubt es alle Befehle die benutzt wurden um die Datenbank zu erstellen in eine textfile zu schreiben und diese kann später dann benutzt werden um die Datenbank zu dem Zeitpunkt der erstellung des textfile herzustellen. Dies ist das Vollbackup und verbraucht am meisten Speichern von all den Backup-Methoden.
+
+Der Befehl `pg_dumb dbname > out_textfile` wird in PostgreSQl benutzt um das Verfahren einzuleiten. Hier wird die DB "dbname" in eine File "out_textfile" geschrieben. Wichtig hierbei ist, dass nur die Tabelen in das Textfile geschrieben werden zu denen der derzeitige User "Read" Berechtigungen besitzt. Deshalb erfolgt dies meist mit einem Superuser. 
+
+Um dieses Textfile wieder in eine Datenbank umzuwandeln muss man den folgenden Befehl ausführen: `psql dbname < out_textfile`. Hier wird das Textfile in eine Datenbank "dbname" eingelesen. Wichtig hierbei ist, dass die Datenbank bereits davor exisitieren muss, da der Befehl die Datenbank nicht erstellt sonder nur in die Datenbank einliest. 
+Auch ist es wichtig, dass bevor man den Befehl ausführt alle Administratoren/User die davor in der Datenbank irgendwelche Berechtigungen besitzt haben, auch in der Datenbankumgebung exisiteren, ansonsten werden die Objecte nicht mit den orignialen Ownerships/permission erstellt.
+
+## File System Level Backup
+Eine Alternative zu SQL Dump ist es nur die Daten, die PostgreSQL benutzt um alles abzuspeicher, zu kopieren. Doch diese Methode ist umpraktisch da der Server heruntergefahren sein muss damit man die Datenbank kopieren kann. Und falls die Datenbank über mehrere Dateisysteme verteilt ist, ist es schwer alle Backups zu bekommen.
