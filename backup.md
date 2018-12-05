@@ -58,7 +58,7 @@ Das PostgreSQL-System schreibt zu allen zeiten eine sogennantes "Write ahead Log
 
 - Die Datenbank muss nicht vollkommen Konsitent sein, die Fehler die während des File System Level Backup entstehen werden durch das WAL Wile behoben.
 - Man kann mehrere WAL-Files unendlichlang miteinander anzureihen. Dies ermöglicht es fortlaufend backups zu machen die dann aneinander gereiht werden können. Bei großen Datenbaken ist dies sehr wichtig, da nicht soviel Speicher verwendet wird als beim Vollbackup.
-- Zudem kann auch nur bestimmte WAL-Files einanderreihen und den Zeitpunkt der Backups wieder herstellen ohne immer alle ausführen zu müssen.
+- Zudem kann auch nur bestimmte WAL-Files einanderreihen und zu einem bestimmten Zeitpunkt der Backups wieder herstellen ohne immer alle ausführen zu müssen.
 
 Zu beachten ist, dass pg_dumb in diesem Fall nicht genügend Daten besitzt ist um so eine Kombination mit WAL-files zu unterstützen.
 Auch ist ein Nachteil dass man nur die komplette Datenbank kopieren kann und nicht nur ein Teil der Datenbank.
