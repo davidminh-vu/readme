@@ -9,6 +9,7 @@ Backups sind wichtig, Dateiverlust kann aufgrund Hardwaredefekts zustande kommen
 ## Inkrementelles Backup
 Zuerst wird eine Vollsicher des vollen Datenbestandes gemacht. Die darauffolgenden Backups bauen auf den vorherigen Backup auf und ergänzen nur neu Daten zu einem neuen Band hinzu. Bedeutet wenn man nicht alle Bänder besitzt, ist die Wiederherstellung der gesicherten Daten nicht möglich.
 
+![inkremetelles backupgraph](https://www.grundlagen-computer.de/wp-content/uploads/2007/12/inkrementelles-backup.jpg)
 ### Vorteile
 Dies ist ein einfaches Verfahren und benötigt nicht viel Speicherbedarf, da die inkrementellen Backups meist kleiner sind.
 Man kann die Daten zu jedem Backupzeitpunkt wiederherstellen.
@@ -19,6 +20,7 @@ Es sind das Vollkabup und alle darauf folgenden Backupbänder benötigt um eine 
 ## Differentielles Backup
 Prinzipell ist das differentielle Backup gleich dem Inkrementellen. Es wird eine Vollsicherung gemacht und danach werden alle Veränderungen zum letzten Vollbackup gesichert. Daten die einmal verändert werden, müssen bei jedem differentiellen Backup neu gesichert werden. Demnach ist zur Wiederherstellung des Datenbestandes das Vollbackup und das gewünchste differentielle Backup notwendig.
 
+![differentielles backupgraph](https://www.grundlagen-computer.de/wp-content/uploads/2007/12/differenzielles-backup.jpg)
 ### Vorteile
 Mehr Speicherbedarf als beim inkrementellen Backup, aber weniger als beim Vollbackup
 Nur Vollbackup und die differentielle Sicherung zum gewünschten Zeitpunkt notwendig.
@@ -29,6 +31,8 @@ Dateien, die einmal verändert werden, müssen bei jedem differentiellen Backup 
 ## Vollbackup
 Dies sichert immer bei jeder Iteration den kompletten Datenbestand. Es wird deshalb nur das entsprechende Vollbackupmedium benötigt.
 
+
+![differentielles backupgraph](https://www.grundlagen-computer.de/wp-content/uploads/2007/12/vollbackup.jpg)
 ### Vorteile
 Nur ein Band zur Wiederherstellung notwenidg
 Einfache Wiederherstellung von Daten
