@@ -64,3 +64,19 @@ Zu beachten ist, dass pg_dumb in diesem Fall nicht genügend Daten besitzt ist u
 Auch ist ein Nachteil dass man nur die komplette Datenbank kopieren kann und nicht nur ein Teil der Datenbank.
 
 # Beispiel
+Im folgenden wird die oben dokumentierten Backup-Methoden auf einer PostgreSQL "Restaurant" Datenbank umgesetzt. 
+![Bild von Datenbankstruktur](https://i.ibb.co/jL5gnYz/fullbackup.png)
+
+Zuerst wird die Vollbackupmethode, SQL Dump, von PostgreSQL ausgeführt. Zuerst ist es wichtig das Outputfile, die der Dump erzeugt, in einem Ordner zu speichern in der postgres auch CREATE-Berechtigung hat. Dazu wird der Befehl
+''' 
+pg_dump restaurant > restDump
+'''
+ausgeführt vom postgres User.
+
+Nun sollte eine neue File namens "restDump" existieren.
+![SQLDump](https://i.ibb.co/6Fgd8fj/tmp.png)
+
+
+# Quellen
+1. https://www.postgresql.org/docs/9.1/backup-dump.html#BACKUP-DUMP-RESTORE
+2. https://www.grundlagen-computer.de/backup/backup-strategien-inkrementell-differentiell-und-vollbackup
