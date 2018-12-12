@@ -84,6 +84,7 @@ Nun sollte eine neue File namens "restDump" existieren.
 Um diesen Backup-Dump wieder in eine Datenbank einzuspielen erstellte man eine neue Datenbank z.B. namens "testdb" die das Template "template0" hat `createdb -T template0 testdb`. Danach kann man das Backup, mit dem Befehl `psql testdb < restDump` in die Datenbank einspielen.
 
 ![Backup eingespielt in Datenbank](https://ibb.co/5kvqSmf)
+![SQLDump](https://pasteboard.co/HRn6T3t.png)
 Man solte nun einige Befehle sehen die die Datenbank erstellen und alle Tables setzen. Um nun zu checken ob alle Daten vorhanden muss man sich mit der Datenbank verbinden und dann alle Tables ausgeben.
 ![Testdb Struktur](https://ibb.co/KmXHRwV)
 Man kann sehen, dass alle Daten von der vorherigen Datenbank auch hier vorhanden sind.
