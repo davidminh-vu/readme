@@ -116,6 +116,10 @@ $ sudo systemctl start postgresql
 Falls der Server gerade läuft muss man in stoppen. Falls die Datenbankstruktur noch exisiert sollte man diese am besten noch absichern, falls es beim Backup zu einem Fehler kommt.
 Danach löscht man alle Files und Directories im Cluster Data Directory, heißt quasi alle Datenbanksätze löschen. Nun spielt man das File System Backup bzw. das Basebackup ein. Man kopiert dazu das Backup in den Cluster und startet danach postgresql.
 PostgreSQL beginnt automatisch mit der Recovery der Datenbank und ließt auch die WAL-Files ein.
+
+## Inkrementelles
+Ein konkretes Inkrementelles Backupsystem gibt es in PostgreSQL nicht, aber man kann theoretisch mittels Online Backup Diesten wie Github inkrementelle Backups einführen. Aus der Perspektive der Sicherheit ist dies aber sehr gefährlich online die Datenbank abzusichern.
+
 # Quellen
 1. https://www.postgresql.org/docs/9.1/backup-dump.html#BACKUP-DUMP-RESTORE
 2. https://www.grundlagen-computer.de/backup/backup-strategien-inkrementell-differentiell-und-vollbackup
