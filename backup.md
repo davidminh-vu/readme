@@ -68,9 +68,9 @@ Im folgenden wird die oben dokumentierten Backup-Methoden auf einer PostgreSQL "
 ![Bild von Datenbankstruktur](https://i.ibb.co/jL5gnYz/fullbackup.png)
 
 Zuerst wird die Vollbackupmethode, SQL Dump, von PostgreSQL ausgeführt. Zuerst ist es wichtig das Outputfile, die der Dump erzeugt, in einem Ordner zu speichern in der postgres auch CREATE-Berechtigung hat. Dazu wird der Befehl
-''' 
+´´´
 pg_dump restaurant > restDump
-'''
+´´´
 ausgeführt vom postgres User.
 
 Nun sollte eine neue File namens "restDump" existieren.
